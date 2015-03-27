@@ -50,11 +50,20 @@ def login():
     br.submit()
     return br
 
+# a course_average_tag looks like:
+# <span class="average"><br><br> 4.17<span style="font-size:40%;">/5</span> </br></br></span>
+def get_course_rating(course_page):
+    soup = BeautifulSoup(course_page)
+    average_tag = soup.find_all("span", "average")[0]
+    return average_tag.contents[0].contents[0].contents[0]
+
 def main():
     br = login()
-    course_number = 'COS510'
-    course_510 = br.open('http://easypce.com/courses/' + course_number).read()
-    with open ('output/' + course_number, 'a') as f:
-        f.write(course_510)
+
+    course_number = raw_input("course number: ")
+    course_page = br.open('http://easypce.com/courses/' + course_number).read()
+    with open ('output/' + course_number, 'w') as f:
+        f.write("course number: " + course_number + "\n")
+        f.write("overall rating:" + get_course_rating(course_page))
 
 main()
